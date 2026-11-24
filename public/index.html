@@ -39,12 +39,13 @@ header.top::after {
   background: repeating-linear-gradient(135deg, var(--berry) 0 10px, var(--snow) 10px 20px);
 }
 header.top h1 {
-  margin: 0; font: 800 clamp(2rem, 9vw, 2.75rem)/1.05 "Big Shoulders Display", "Figtree", system-ui, sans-serif;
-  letter-spacing: .02em; text-transform: uppercase;
+  margin: 0; line-height: 1;
+  color: var(--ink);
 }
 header.top p { margin: 6px 0 0; color: var(--muted); }
 .brand { display: flex; align-items: center; gap: 16px; }
-.brand svg { flex: none; width: 88px; height: 88px; }
+.brand > svg { flex: none; width: 88px; height: 88px; }
+.brand .ss-mark { display: block; width: 66px; height: 60px; overflow: visible; }
 
 main { padding: 32px 0 48px; }
 h2 { margin: 0 0 6px; font: 600 1.35rem/1.2 "Big Shoulders Display", "Figtree", system-ui, sans-serif; letter-spacing: -0.01em; }
@@ -128,21 +129,52 @@ dialog.dlg::backdrop { background: rgba(0,0,0,.7); }
   <div class="wrap">
     <div class="brand">
       <svg viewBox="0 0 120 120" aria-hidden="true">
+        <defs>
+          <clipPath id="santa-portrait-clip">
+            <circle cx="60" cy="60" r="56"/>
+          </clipPath>
+        </defs>
         <circle cx="60" cy="60" r="57" fill="#1e2125" stroke="#b08d3c" stroke-width="2"/>
-        <path d="M26 58Q24 104 60 112Q96 104 94 58Q60 78 26 58Z" fill="#e8e4da"/>
-        <ellipse cx="60" cy="58" rx="26" ry="24" fill="#d9a98c"/>
-        <path d="M30 48Q34 14 64 12Q70 8 78 14Q92 22 90 48Q60 40 30 48Z" fill="#a31f2b"/>
-        <rect x="28" y="44" width="64" height="12" rx="6" fill="#e8e4da"/>
-        <circle cx="82" cy="12" r="8" fill="#e8e4da"/>
-        <path d="M43 57L56 62M77 57L64 62" stroke="#2a1a14" stroke-width="3.5" stroke-linecap="round"/>
-        <path d="M46 66h9M65 66h9" stroke="#2a1a14" stroke-width="2.5" stroke-linecap="round"/>
-        <circle cx="60" cy="72" r="4" fill="#c4806a"/>
-        <path d="M42 80Q50 72 60 77Q70 72 78 80Q70 88 60 82Q50 88 42 80Z" fill="#e8e4da"/>
-        <path d="M54 92h12" stroke="#7a3a30" stroke-width="2.5" stroke-linecap="round"/>
+        <g clip-path="url(#santa-portrait-clip)">
+          <!-- Cappotto natalizio e collo di pelliccia -->
+          <path d="M17 120V109C18 96 32 90 47 87H73C88 90 102 96 103 109V120Z" fill="#a31f2b"/>
+          <path d="M50 79H70V94L60 101L50 94Z" fill="#d9a98c"/>
+          <path d="M46 87L60 98L51 110L32 96Z" fill="#f2eee4"/>
+          <path d="M74 87L60 98L69 110L88 96Z" fill="#f2eee4"/>
+          <path d="M57 101H63V120H57Z" fill="#e8e4da"/>
+          <circle cx="60" cy="112" r="2" fill="#b08d3c"/>
+          <!-- Viso scoperto, orecchie e mascella -->
+          <ellipse cx="35" cy="61" rx="5" ry="8" fill="#c88f73"/>
+          <ellipse cx="85" cy="61" rx="5" ry="8" fill="#c88f73"/>
+          <path d="M35 42C35 29 85 29 85 42L82 70C80 82 69 91 60 92C51 91 40 82 38 70Z" fill="#dfb092"/>
+          <path d="M39 67C42 78 49 85 60 88C70 85 77 78 81 67C79 82 69 92 60 93C50 92 41 83 39 67Z" fill="#c88f73"/>
+          <!-- Capelli con riga laterale e ciuffo ampio e arrotondato -->
+          <path d="M34 43C33 27 50 23 65 26C81 24 88 34 86 49L83 59L78 48L72 36C64 42 57 50 46 54C40 57 35 54 36 48L34 57Z" fill="#251d1a"/>
+          <path d="M69 31C60 32 51 37 44 44" fill="none" stroke="#49362b" stroke-width="2" stroke-linecap="round"/>
+          <!-- Cappello centrato sulla testa, con punta piegata a destra -->
+          <path d="M34 31C36 17 47 8 61 9C78 9 88 17 96 29L102 39L91 44C90 32 84 27 79 28L84 34C67 29 50 29 34 35Z" fill="#a31f2b"/>
+          <path d="M44 23C52 16 65 15 76 20" fill="none" stroke="#c43c43" stroke-width="3" stroke-linecap="round"/>
+          <path d="M35 28C49 24 70 24 84 29C89 30 89 38 84 39C69 34 50 34 36 38C31 39 30 30 35 28Z" fill="#f2eee4"/>
+          <circle cx="99" cy="43" r="8" fill="#f2eee4"/>
+          <!-- Sopracciglia, occhi e naso -->
+          <path d="M43 58L54 60M66 60L77 57" fill="none" stroke="#251d1a" stroke-width="3" stroke-linecap="round"/>
+          <path d="M44 64H53M67 64H76" fill="none" stroke="#79533f" stroke-width="1.5" stroke-linecap="round"/>
+          <circle cx="49" cy="64" r="2" fill="#251d1a"/>
+          <circle cx="71" cy="64" r="2" fill="#251d1a"/>
+          <path d="M60 63L57 72Q60 75 64 72" fill="none" stroke="#b6795e" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          <!-- Baffetto trapezoidale e bocca -->
+          <path d="M56 75H64L67 82H53Z" fill="#251d1a"/>
+          <path d="M54 85Q60 83 66 85" fill="none" stroke="#824c3e" stroke-width="1.8" stroke-linecap="round"/>
+        </g>
       </svg>
       <div>
-        <h1>Secret Santa</h1>
-        <p>Attendance is mandatory. Gifts are not optional.</p>
+        <h1 aria-label="SS">
+          <svg class="ss-mark" viewBox="0 0 66 60" aria-hidden="true" focusable="false">
+            <path d="M17 2H30L17 22H29L5 58L13 33H1Z" fill="currentColor"/>
+            <path d="M52 2H65L52 22H64L40 58L48 33H36Z" fill="currentColor"/>
+          </svg>
+        </h1>
+        <p>Secret Santa. Attendance is mandatory. Gifts are not optional.</p>
       </div>
     </div>
   </div>
