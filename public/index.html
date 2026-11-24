@@ -4,22 +4,24 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Secret Santa</title>
-<meta name="theme-color" content="#0e3b2e">
+<meta name="theme-color" content="#0f1113">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8E%81%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 :root {
-  --pine: #0e3b2e;
-  --berry: #b0203b;
-  --berry-dark: #8f1830;
-  --gold: #e3b04b;
-  --snow: #f4f7f5;
-  --ink: #16211d;
-  --mist: #d5dfda;
-  --muted: #53635c;
-  color-scheme: light;
+  --pine: #0f1113;
+  --berry: #8e1f28;
+  --berry-dark: #741820;
+  --gold: #b08d3c;
+  --snow: #15171a;
+  --ink: #e8e4da;
+  --mist: #33383d;
+  --muted: #9a9a92;
+  --panel: #1e2125;
+  --well: #101214;
+  color-scheme: dark;
 }
 *, *::before, *::after { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; }
@@ -31,33 +33,35 @@ body {
 }
 .wrap { width: 100%; max-width: 30rem; margin: 0 auto; padding: 0 20px; }
 
-header.top { background: var(--pine); color: var(--snow); padding: 28px 0 26px; position: relative; }
+header.top { background: var(--pine); color: var(--ink); padding: 24px 0 26px; border-bottom: 1px solid var(--gold); position: relative; }
 header.top::after {
   content: ""; position: absolute; left: 0; right: 0; bottom: -8px; height: 8px;
   background: repeating-linear-gradient(135deg, var(--berry) 0 10px, var(--snow) 10px 20px);
 }
 header.top h1 {
-  margin: 0; font: 800 clamp(2rem, 9vw, 2.75rem)/1.05 "Bricolage Grotesque", "Figtree", system-ui, sans-serif;
-  letter-spacing: -0.02em;
+  margin: 0; font: 800 clamp(2rem, 9vw, 2.75rem)/1.05 "Big Shoulders Display", "Figtree", system-ui, sans-serif;
+  letter-spacing: .02em; text-transform: uppercase;
 }
-header.top p { margin: 6px 0 0; color: #bcd3c9; }
+header.top p { margin: 6px 0 0; color: var(--muted); }
+.brand { display: flex; align-items: center; gap: 16px; }
+.brand svg { flex: none; width: 88px; height: 88px; }
 
 main { padding: 32px 0 48px; }
-h2 { margin: 0 0 6px; font: 600 1.35rem/1.2 "Bricolage Grotesque", "Figtree", system-ui, sans-serif; letter-spacing: -0.01em; }
+h2 { margin: 0 0 6px; font: 600 1.35rem/1.2 "Big Shoulders Display", "Figtree", system-ui, sans-serif; letter-spacing: -0.01em; }
 p { margin: 0 0 14px; }
 .muted { color: var(--muted); }
 .small { font-size: .9rem; }
 
-.card { background: #fff; border: 1px solid var(--mist); border-radius: 14px; padding: 20px; margin-bottom: 16px; }
+.card { background: var(--panel); border: 1px solid var(--mist); border-radius: 14px; padding: 20px; margin-bottom: 16px; }
 
 .field { margin-bottom: 14px; }
 .field label { display: block; font-weight: 600; margin-bottom: 4px; }
 .field .hint { display: block; font-size: .875rem; color: var(--muted); margin-top: 4px; }
 input[type=text], input[type=password], input[type=search] {
   width: 100%; padding: 12px 14px; font: inherit; font-size: 1rem; color: var(--ink);
-  background: #fff; border: 1.5px solid #b5c5bd; border-radius: 10px;
+  background: var(--well); border: 1.5px solid #4a5056; border-radius: 10px;
 }
-input:focus-visible { outline: 3px solid var(--gold); outline-offset: 0; border-color: var(--pine); }
+input:focus-visible { outline: 3px solid var(--gold); outline-offset: 0; border-color: var(--gold); }
 input.code { text-transform: uppercase; letter-spacing: .14em; font-weight: 600; }
 
 .btn {
@@ -68,51 +72,52 @@ input.code { text-transform: uppercase; letter-spacing: .14em; font-weight: 600;
 .btn[disabled] { opacity: .5; cursor: not-allowed; }
 .btn.primary { background: var(--berry); color: #fff; }
 .btn.primary:hover:not([disabled]) { background: var(--berry-dark); }
-.btn.secondary { background: transparent; color: var(--pine); border-color: var(--pine); }
-.btn.secondary:hover:not([disabled]) { background: #e7efeb; }
+.btn.secondary { background: transparent; color: var(--ink); border-color: var(--gold); }
+.btn.secondary:hover:not([disabled]) { background: #262a2e; }
 .btn.block { width: 100%; }
 .btn.text { background: none; border: none; padding: 6px 4px; color: var(--muted); text-decoration: underline; font-weight: 500; }
 .btn.danger { background: none; border: none; padding: 4px 6px; color: var(--berry); font-weight: 600; font-size: .9rem; }
 
 .error, .notice { padding: 10px 14px; border-radius: 10px; margin-bottom: 14px; font-size: .95rem; }
-.error { background: #fbe9ec; color: #7a1226; border: 1px solid #efc0c8; }
-.notice { background: #eaf2ee; color: var(--pine); border: 1px solid var(--mist); }
+.error { background: #3a1519; color: #f3c9ce; border: 1px solid #6b2a31; }
+.notice { background: #232a26; color: #cfe0d6; border: 1px solid var(--mist); }
 [hidden] { display: none !important; }
 
-.seg { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; padding: 4px; background: #e7efeb; border-radius: 12px; margin-bottom: 16px; }
-.seg button { padding: 10px 8px; font: 600 .95rem "Figtree", system-ui, sans-serif; border: none; border-radius: 9px; background: transparent; color: var(--pine); cursor: pointer; }
-.seg button[aria-pressed=true] { background: #fff; box-shadow: 0 1px 2px rgba(14,59,46,.25); }
+.seg { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; padding: 4px; background: var(--well); border-radius: 12px; margin-bottom: 16px; }
+.seg button { padding: 10px 8px; font: 600 .95rem "Figtree", system-ui, sans-serif; border: none; border-radius: 9px; background: transparent; color: var(--muted); cursor: pointer; }
+.seg button[aria-pressed=true] { background: #2a2f34; color: var(--ink); }
 .seg button:focus-visible { outline: 3px solid var(--gold); }
 
 .codebox { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-top: 12px; }
-.code-chip { font: 800 1.7rem/1 "Bricolage Grotesque", "Figtree", sans-serif; letter-spacing: .14em; color: var(--pine); }
+.code-chip { font: 800 1.7rem/1 "Big Shoulders Display", "Figtree", sans-serif; letter-spacing: .14em; color: var(--gold); }
 
 ul.members { list-style: none; margin: 8px 0 0; padding: 0; }
 ul.members li { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 10px 0; border-bottom: 1px solid var(--mist); }
 ul.members li:last-child { border-bottom: none; }
 .who { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; min-width: 0; overflow-wrap: anywhere; }
 .pill { font-size: .75rem; font-weight: 600; padding: 2px 8px; border-radius: 99px; background: var(--gold); color: var(--ink); }
-.pill.me { background: #e7efeb; color: var(--pine); }
+.pill.me { background: #2a2f34; color: var(--ink); }
+.pill { color: #15171a; }
 
 .tagwrap { text-align: center; padding: 8px 0 4px; }
 .tag {
   position: relative; display: block; width: 100%; max-width: 17rem; margin: 0 auto 16px;
-  background: var(--gold); color: var(--ink); padding: 48px 20px 28px; text-align: center;
+  background: var(--gold); color: #15171a; padding: 48px 20px 28px; text-align: center;
   clip-path: polygon(18% 0, 82% 0, 100% 15%, 100% 100%, 0 100%, 0 15%);
   transform-origin: 50% 0;
 }
 .tag::before {
   content: ""; position: absolute; top: 20px; left: 50%; width: 16px; height: 16px; margin-left: -8px;
-  border-radius: 50%; background: #fff; box-shadow: inset 0 0 0 2px rgba(22,33,29,.25);
+  border-radius: 50%; background: var(--panel); box-shadow: inset 0 0 0 2px rgba(0,0,0,.35);
 }
 .tag .for { margin: 0 0 6px; font-size: .95rem; font-weight: 500; }
-.tag .target { margin: 0; font: 800 clamp(1.8rem, 9vw, 2.4rem)/1.1 "Bricolage Grotesque", "Figtree", sans-serif; letter-spacing: -0.02em; overflow-wrap: anywhere; }
+.tag .target { margin: 0; font: 800 clamp(1.8rem, 9vw, 2.4rem)/1.1 "Big Shoulders Display", "Figtree", sans-serif; letter-spacing: -0.02em; overflow-wrap: anywhere; }
 .tag.swing { animation: swing 1s ease-out 1; }
 @keyframes swing { 0% { transform: rotate(0); } 20% { transform: rotate(-7deg); } 45% { transform: rotate(5deg); } 70% { transform: rotate(-2deg); } 100% { transform: rotate(0); } }
 
 .row { display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap; }
-dialog.dlg { border: none; border-radius: 14px; padding: 22px; max-width: 24rem; width: calc(100% - 40px); color: var(--ink); }
-dialog.dlg::backdrop { background: rgba(14,59,46,.55); }
+dialog.dlg { border: 1px solid var(--gold); border-radius: 14px; padding: 22px; max-width: 24rem; width: calc(100% - 40px); background: var(--panel); color: var(--ink); }
+dialog.dlg::backdrop { background: rgba(0,0,0,.7); }
 .center { text-align: center; }
 
 @media (prefers-reduced-motion: reduce) { .tag.swing { animation: none; } }
@@ -121,8 +126,25 @@ dialog.dlg::backdrop { background: rgba(14,59,46,.55); }
 <body>
 <header class="top">
   <div class="wrap">
-    <h1>Secret Santa</h1>
-    <p>Estrazione tra amici, senza bigliettini.</p>
+    <div class="brand">
+      <svg viewBox="0 0 120 120" aria-hidden="true">
+        <circle cx="60" cy="60" r="57" fill="#1e2125" stroke="#b08d3c" stroke-width="2"/>
+        <path d="M26 58Q24 104 60 112Q96 104 94 58Q60 78 26 58Z" fill="#e8e4da"/>
+        <ellipse cx="60" cy="58" rx="26" ry="24" fill="#d9a98c"/>
+        <path d="M30 48Q34 14 64 12Q70 8 78 14Q92 22 90 48Q60 40 30 48Z" fill="#a31f2b"/>
+        <rect x="28" y="44" width="64" height="12" rx="6" fill="#e8e4da"/>
+        <circle cx="82" cy="12" r="8" fill="#e8e4da"/>
+        <path d="M43 57L56 62M77 57L64 62" stroke="#2a1a14" stroke-width="3.5" stroke-linecap="round"/>
+        <path d="M46 66h9M65 66h9" stroke="#2a1a14" stroke-width="2.5" stroke-linecap="round"/>
+        <circle cx="60" cy="72" r="4" fill="#c4806a"/>
+        <path d="M42 80Q50 72 60 77Q70 72 78 80Q70 88 60 82Q50 88 42 80Z" fill="#e8e4da"/>
+        <path d="M54 92h12" stroke="#7a3a30" stroke-width="2.5" stroke-linecap="round"/>
+      </svg>
+      <div>
+        <h1>Secret Santa</h1>
+        <p>Attendance is mandatory. Gifts are not optional.</p>
+      </div>
+    </div>
   </div>
 </header>
 <main>
@@ -272,7 +294,7 @@ function showHome(notice, ok) {
   render(
     notice ? h("div", { class: ok ? "notice" : "error", role: "alert" }, notice) : null,
     card(
-      h("h2", {}, "Entra in una stanza"),
+      h("h2", {}, "Join your SS"),
       h("p", { class: "muted" }, "Inserisci il codice che ti ha dato l'host."),
       form([
         field("Codice stanza", "code", { class: "code", maxlength: 12, required: true, autocapitalize: "characters", placeholder: "K7M2QX" }),
