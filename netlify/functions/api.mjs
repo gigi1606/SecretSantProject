@@ -280,6 +280,21 @@ function revealTarget(b) {
   );
 }
 
+async function deleteRoom(b) {
+  const code = normCode(b.code);
+  const s = rooms();
+  const entry = await s.getWithMetadata(code, { type: "json" });
+  if (!entry) throw new ApiError(404, "Stanza non trovata. Controlla il codice.");
+  const auth = authenticate(entry.data, b.name, b.pin);
+  if (auth.error) {
+    if (auth.dirty) await s.setJSON(code, entry.data, { onlyIfMatch: entry.etag });
+    throw auth.error;
+  }
+  if (!auth.member.isHost) throw new ApiError(403, "Solo l'host può eliminare la stanza.");
+  await s.delete(code);
+  return { deleted: true };
+}
+
 const actions = {
   create: createRoom,
   info: roomInfo,
@@ -288,6 +303,7 @@ const actions = {
   remove: removeMember,
   draw: drawRoom,
   reveal: revealTarget,
+  delete: deleteRoom,
 };
 
 /* ---------- handler ---------- */

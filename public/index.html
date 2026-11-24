@@ -267,10 +267,10 @@ function askConfirm(text, okLabel) {
 
 /* ---------- schermate ---------- */
 
-function showHome(notice) {
+function showHome(notice, ok) {
   setUrl(null);
   render(
-    notice ? h("div", { class: "error", role: "alert" }, notice) : null,
+    notice ? h("div", { class: ok ? "notice" : "error", role: "alert" }, notice) : null,
     card(
       h("h2", {}, "Entra in una stanza"),
       h("p", { class: "muted" }, "Inserisci il codice che ti ha dato l'host."),
@@ -540,7 +540,19 @@ function renderRoom() {
     h("p", { class: "small muted" }, "Potrai rientrare con il tuo nome e il tuo PIN.")
   );
 
-  render(banner, head, open ? [list, action] : [action, list], leave);
+  const del = isHost
+    ? h("div", { class: "center" },
+        h("button", { class: "btn danger", type: "button", onclick: async () => {
+          if (!(await askConfirm("Elimino la stanza per tutti? Partecipanti e abbinamenti andranno persi e non si può annullare.", "Elimina"))) return;
+          try {
+            await api("delete", roomPayload());
+            dropSession(current.code); current = null; revealed = null;
+            showHome("Stanza eliminata.", true);
+          } catch (e) { showError(e); }
+        } }, "Elimina stanza"))
+    : null;
+
+  render(banner, head, open ? [list, action] : [action, list], leave, del);
   startPoll();
 }
 
