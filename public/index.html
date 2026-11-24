@@ -1,0 +1,578 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Secret Santa</title>
+<meta name="theme-color" content="#0e3b2e">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8E%81%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --pine: #0e3b2e;
+  --berry: #b0203b;
+  --berry-dark: #8f1830;
+  --gold: #e3b04b;
+  --snow: #f4f7f5;
+  --ink: #16211d;
+  --mist: #d5dfda;
+  --muted: #53635c;
+  color-scheme: light;
+}
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--snow);
+  color: var(--ink);
+  font: 400 1rem/1.5 "Figtree", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+.wrap { width: 100%; max-width: 30rem; margin: 0 auto; padding: 0 20px; }
+
+header.top { background: var(--pine); color: var(--snow); padding: 28px 0 26px; position: relative; }
+header.top::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: -8px; height: 8px;
+  background: repeating-linear-gradient(135deg, var(--berry) 0 10px, var(--snow) 10px 20px);
+}
+header.top h1 {
+  margin: 0; font: 800 clamp(2rem, 9vw, 2.75rem)/1.05 "Bricolage Grotesque", "Figtree", system-ui, sans-serif;
+  letter-spacing: -0.02em;
+}
+header.top p { margin: 6px 0 0; color: #bcd3c9; }
+
+main { padding: 32px 0 48px; }
+h2 { margin: 0 0 6px; font: 600 1.35rem/1.2 "Bricolage Grotesque", "Figtree", system-ui, sans-serif; letter-spacing: -0.01em; }
+p { margin: 0 0 14px; }
+.muted { color: var(--muted); }
+.small { font-size: .9rem; }
+
+.card { background: #fff; border: 1px solid var(--mist); border-radius: 14px; padding: 20px; margin-bottom: 16px; }
+
+.field { margin-bottom: 14px; }
+.field label { display: block; font-weight: 600; margin-bottom: 4px; }
+.field .hint { display: block; font-size: .875rem; color: var(--muted); margin-top: 4px; }
+input[type=text], input[type=password], input[type=search] {
+  width: 100%; padding: 12px 14px; font: inherit; font-size: 1rem; color: var(--ink);
+  background: #fff; border: 1.5px solid #b5c5bd; border-radius: 10px;
+}
+input:focus-visible { outline: 3px solid var(--gold); outline-offset: 0; border-color: var(--pine); }
+input.code { text-transform: uppercase; letter-spacing: .14em; font-weight: 600; }
+
+.btn {
+  display: inline-block; padding: 12px 18px; font: 600 1rem/1.2 "Figtree", system-ui, sans-serif;
+  border-radius: 10px; border: 1.5px solid transparent; cursor: pointer; text-align: center;
+}
+.btn:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+.btn[disabled] { opacity: .5; cursor: not-allowed; }
+.btn.primary { background: var(--berry); color: #fff; }
+.btn.primary:hover:not([disabled]) { background: var(--berry-dark); }
+.btn.secondary { background: transparent; color: var(--pine); border-color: var(--pine); }
+.btn.secondary:hover:not([disabled]) { background: #e7efeb; }
+.btn.block { width: 100%; }
+.btn.text { background: none; border: none; padding: 6px 4px; color: var(--muted); text-decoration: underline; font-weight: 500; }
+.btn.danger { background: none; border: none; padding: 4px 6px; color: var(--berry); font-weight: 600; font-size: .9rem; }
+
+.error, .notice { padding: 10px 14px; border-radius: 10px; margin-bottom: 14px; font-size: .95rem; }
+.error { background: #fbe9ec; color: #7a1226; border: 1px solid #efc0c8; }
+.notice { background: #eaf2ee; color: var(--pine); border: 1px solid var(--mist); }
+[hidden] { display: none !important; }
+
+.seg { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; padding: 4px; background: #e7efeb; border-radius: 12px; margin-bottom: 16px; }
+.seg button { padding: 10px 8px; font: 600 .95rem "Figtree", system-ui, sans-serif; border: none; border-radius: 9px; background: transparent; color: var(--pine); cursor: pointer; }
+.seg button[aria-pressed=true] { background: #fff; box-shadow: 0 1px 2px rgba(14,59,46,.25); }
+.seg button:focus-visible { outline: 3px solid var(--gold); }
+
+.codebox { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-top: 12px; }
+.code-chip { font: 800 1.7rem/1 "Bricolage Grotesque", "Figtree", sans-serif; letter-spacing: .14em; color: var(--pine); }
+
+ul.members { list-style: none; margin: 8px 0 0; padding: 0; }
+ul.members li { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 10px 0; border-bottom: 1px solid var(--mist); }
+ul.members li:last-child { border-bottom: none; }
+.who { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; min-width: 0; overflow-wrap: anywhere; }
+.pill { font-size: .75rem; font-weight: 600; padding: 2px 8px; border-radius: 99px; background: var(--gold); color: var(--ink); }
+.pill.me { background: #e7efeb; color: var(--pine); }
+
+.tagwrap { text-align: center; padding: 8px 0 4px; }
+.tag {
+  position: relative; display: block; width: 100%; max-width: 17rem; margin: 0 auto 16px;
+  background: var(--gold); color: var(--ink); padding: 48px 20px 28px; text-align: center;
+  clip-path: polygon(18% 0, 82% 0, 100% 15%, 100% 100%, 0 100%, 0 15%);
+  transform-origin: 50% 0;
+}
+.tag::before {
+  content: ""; position: absolute; top: 20px; left: 50%; width: 16px; height: 16px; margin-left: -8px;
+  border-radius: 50%; background: #fff; box-shadow: inset 0 0 0 2px rgba(22,33,29,.25);
+}
+.tag .for { margin: 0 0 6px; font-size: .95rem; font-weight: 500; }
+.tag .target { margin: 0; font: 800 clamp(1.8rem, 9vw, 2.4rem)/1.1 "Bricolage Grotesque", "Figtree", sans-serif; letter-spacing: -0.02em; overflow-wrap: anywhere; }
+.tag.swing { animation: swing 1s ease-out 1; }
+@keyframes swing { 0% { transform: rotate(0); } 20% { transform: rotate(-7deg); } 45% { transform: rotate(5deg); } 70% { transform: rotate(-2deg); } 100% { transform: rotate(0); } }
+
+.row { display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap; }
+dialog.dlg { border: none; border-radius: 14px; padding: 22px; max-width: 24rem; width: calc(100% - 40px); color: var(--ink); }
+dialog.dlg::backdrop { background: rgba(14,59,46,.55); }
+.center { text-align: center; }
+
+@media (prefers-reduced-motion: reduce) { .tag.swing { animation: none; } }
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <h1>Secret Santa</h1>
+    <p>Estrazione tra amici, senza bigliettini.</p>
+  </div>
+</header>
+<main>
+  <div class="wrap" id="app"></div>
+</main>
+
+<script>
+"use strict";
+
+/* ---------- utilità ---------- */
+
+const $app = document.getElementById("app");
+const CODE_CHARS = "ABCDEFGHJKMNPQRSTUVWXYZ23456789";
+
+class ApiErr extends Error {
+  constructor(message, status) { super(message); this.status = status; }
+}
+
+async function api(action, payload = {}) {
+  let res;
+  try {
+    res = await fetch("/api", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action, ...payload }),
+    });
+  } catch {
+    throw new ApiErr("Connessione assente. Controlla la rete e riprova.", 0);
+  }
+  let data = null;
+  try { data = await res.json(); } catch { /* risposta non JSON */ }
+  if (!res.ok) throw new ApiErr((data && data.error) || "Errore imprevisto. Riprova.", res.status);
+  return data;
+}
+
+function h(tag, props, ...kids) {
+  const el = document.createElement(tag);
+  for (const [k, v] of Object.entries(props || {})) {
+    if (v == null || v === false) continue;
+    if (k === "class") el.className = v;
+    else if (k.startsWith("on")) el.addEventListener(k.slice(2), v);
+    else el.setAttribute(k, v === true ? "" : v);
+  }
+  const add = (kid) => {
+    if (kid == null || kid === false) return;
+    if (Array.isArray(kid)) kid.forEach(add);
+    else el.append(kid instanceof Node ? kid : document.createTextNode(String(kid)));
+  };
+  kids.forEach(add);
+  return el;
+}
+
+function normCode(v) {
+  const code = String(v || "").toUpperCase().replace(/[^A-Z0-9]/g, "");
+  return code.length === 6 && [...code].every((c) => CODE_CHARS.includes(c)) ? code : null;
+}
+
+/* ---------- sessioni salvate sul dispositivo ---------- */
+
+const SKEY = "ss.sessions.v1";
+function readSessions() {
+  try {
+    const s = JSON.parse(localStorage.getItem(SKEY));
+    if (s && typeof s === "object" && s.rooms) return s;
+  } catch { /* storage non disponibile o corrotto */ }
+  return { last: null, rooms: {} };
+}
+function writeSessions(s) { try { localStorage.setItem(SKEY, JSON.stringify(s)); } catch { /* ignora */ } }
+function saveSession(code, name, pin) {
+  const s = readSessions(); s.rooms[code] = { name, pin }; s.last = code; writeSessions(s);
+}
+function dropSession(code) {
+  const s = readSessions(); delete s.rooms[code]; if (s.last === code) s.last = null; writeSessions(s);
+}
+
+function setUrl(code) {
+  try { history.replaceState(null, "", code ? `/?c=${code}` : "/"); } catch { /* ignora */ }
+}
+
+/* ---------- componenti ---------- */
+
+let fieldId = 0;
+function field(label, name, opts = {}) {
+  const id = `f${++fieldId}`;
+  return h("div", { class: "field" },
+    h("label", { for: id }, label),
+    h("input", {
+      id, name, type: opts.type || "text", maxlength: opts.maxlength, required: opts.required,
+      inputmode: opts.inputmode, pattern: opts.pattern, placeholder: opts.placeholder,
+      autocomplete: opts.autocomplete || "off", autocapitalize: opts.autocapitalize,
+      spellcheck: "false", class: opts.class, value: opts.value,
+    }),
+    opts.hint ? h("span", { class: "hint" }, opts.hint) : null
+  );
+}
+const pinField = (label, name, hint) => field(label, name, {
+  type: "password", inputmode: "numeric", pattern: "[0-9]{4,6}", maxlength: 6, required: true, hint,
+});
+
+function form(children, onSubmit) {
+  const err = h("div", { class: "error", role: "alert", hidden: true });
+  const f = h("form", { novalidate: true }, err, children);
+  f.addEventListener("submit", async (ev) => {
+    ev.preventDefault();
+    const btn = f.querySelector("button[type=submit]");
+    err.hidden = true;
+    if (!f.reportValidity()) return;
+    btn.disabled = true;
+    try {
+      await onSubmit(new FormData(f));
+    } catch (e) {
+      err.textContent = e.message || "Errore imprevisto. Riprova.";
+      err.hidden = false;
+    } finally {
+      btn.disabled = false;
+    }
+  });
+  return f;
+}
+
+const card = (...kids) => h("section", { class: "card" }, kids);
+
+function render(...nodes) {
+  stopPoll();
+  $app.replaceChildren(...nodes.flat().filter(Boolean));
+}
+
+function askConfirm(text, okLabel) {
+  return new Promise((resolve) => {
+    const dlg = h("dialog", { class: "dlg" },
+      h("p", {}, text),
+      h("div", { class: "row" },
+        h("button", { class: "btn secondary", type: "button", onclick: () => dlg.close("no") }, "Annulla"),
+        h("button", { class: "btn primary", type: "button", onclick: () => dlg.close("yes") }, okLabel)
+      )
+    );
+    dlg.addEventListener("close", () => { resolve(dlg.returnValue === "yes"); dlg.remove(); });
+    document.body.append(dlg);
+    dlg.showModal();
+  });
+}
+
+/* ---------- schermate ---------- */
+
+function showHome(notice) {
+  setUrl(null);
+  render(
+    notice ? h("div", { class: "error", role: "alert" }, notice) : null,
+    card(
+      h("h2", {}, "Entra in una stanza"),
+      h("p", { class: "muted" }, "Inserisci il codice che ti ha dato l'host."),
+      form([
+        field("Codice stanza", "code", { class: "code", maxlength: 12, required: true, autocapitalize: "characters", placeholder: "K7M2QX" }),
+        h("button", { class: "btn primary block", type: "submit" }, "Continua"),
+      ], async (fd) => {
+        const code = normCode(fd.get("code"));
+        if (!code) throw new Error("Il codice è di 6 caratteri, lettere e numeri.");
+        const s = readSessions();
+        if (s.rooms[code]) return openRoom(code);
+        await showAccess(code);
+      })
+    ),
+    card(
+      h("h2", {}, "Organizzi tu?"),
+      h("p", { class: "muted" }, "Crea una stanza e manda il codice ai tuoi amici."),
+      h("button", { class: "btn secondary block", type: "button", onclick: showCreate }, "Crea una stanza")
+    )
+  );
+}
+
+function showCreate() {
+  setUrl(null);
+  render(
+    card(
+      h("h2", {}, "Crea una stanza"),
+      h("p", { class: "muted" }, "Parteciperai anche tu, come host."),
+      form([
+        field("Nome della stanza", "title", { maxlength: 40, placeholder: "Secret Santa", hint: "Facoltativo." }),
+        field("Budget", "budget", { maxlength: 30, placeholder: "20 €", hint: "Facoltativo." }),
+        field("Il tuo nome", "name", { maxlength: 30, required: true, autocomplete: "nickname" }),
+        pinField("PIN personale (4-6 cifre)", "pin", "Serve per rientrare da un altro dispositivo. Non si può recuperare."),
+        pinField("Ripeti il PIN", "pin2"),
+        h("button", { class: "btn primary block", type: "submit" }, "Crea stanza"),
+      ], async (fd) => {
+        const pin = fd.get("pin");
+        if (pin !== fd.get("pin2")) throw new Error("I due PIN non coincidono.");
+        const name = String(fd.get("name")).replace(/\s+/g, " ").trim();
+        const data = await api("create", { title: fd.get("title"), budget: fd.get("budget"), name, pin });
+        saveSession(data.code, data.me.name, pin);
+        enterRoom(data, { code: data.code, name: data.me.name, pin });
+      }),
+      h("button", { class: "btn text", type: "button", onclick: () => showHome() }, "Indietro")
+    )
+  );
+}
+
+async function showAccess(code, notice) {
+  setUrl(code);
+  render(card(h("p", { class: "muted center" }, "Caricamento…")));
+  let info;
+  try {
+    info = await api("info", { code });
+  } catch (e) {
+    if (e.status === 404 || e.status === 400) { dropSession(code); return showHome(e.message); }
+    return showRetry(e.message, () => showAccess(code, notice));
+  }
+  const open = info.status === "open";
+  let mode = open ? "join" : "login";
+  const body = h("div");
+
+  const draw = () => {
+    const isJoin = mode === "join";
+    body.replaceChildren(
+      form([
+        field("Il tuo nome", "name", { maxlength: 30, required: true, autocomplete: "nickname" }),
+        pinField(isJoin ? "Scegli un PIN (4-6 cifre)" : "Il tuo PIN", "pin",
+          isJoin ? "Ti serve per rientrare e vedere il tuo abbinamento. Non si può recuperare." : null),
+        isJoin ? pinField("Ripeti il PIN", "pin2") : null,
+        h("button", { class: "btn primary block", type: "submit" }, isJoin ? "Iscrivimi" : "Entra"),
+      ], async (fd) => {
+        const name = String(fd.get("name")).replace(/\s+/g, " ").trim();
+        const pin = fd.get("pin");
+        let data;
+        if (isJoin) {
+          if (pin !== fd.get("pin2")) throw new Error("I due PIN non coincidono.");
+          data = await api("join", { code, name, pin });
+        } else {
+          data = await api("state", { code, name, pin });
+        }
+        saveSession(code, data.me.name, pin);
+        enterRoom(data, { code, name: data.me.name, pin });
+      })
+    );
+  };
+
+  const tabs = open
+    ? h("div", { class: "seg" },
+        ...[["join", "Mi iscrivo"], ["login", "Sono già iscritto"]].map(([m, label]) => {
+          const b = h("button", { type: "button", "aria-pressed": String(mode === m), onclick: () => {
+            mode = m;
+            tabs.querySelectorAll("button").forEach((x, i) => x.setAttribute("aria-pressed", String(["join", "login"][i] === mode)));
+            draw();
+          } }, label);
+          return b;
+        }))
+    : null;
+
+  draw();
+  render(
+    notice ? h("div", { class: "error", role: "alert" }, notice) : null,
+    card(
+      h("h2", {}, info.title),
+      h("p", { class: "muted" }, open
+        ? `${info.count} ${info.count === 1 ? "partecipante iscritto" : "partecipanti iscritti"}.`
+        : "L'estrazione è già stata fatta: possono entrare solo i partecipanti iscritti."),
+      tabs,
+      body,
+      h("button", { class: "btn text", type: "button", onclick: () => showHome() }, "Indietro")
+    )
+  );
+}
+
+function showRetry(message, retry) {
+  render(card(
+    h("div", { class: "error", role: "alert" }, message),
+    h("button", { class: "btn primary block", type: "button", onclick: retry }, "Riprova")
+  ));
+}
+
+/* ---------- stanza ---------- */
+
+let current = null;      // { code, name, pin, data }
+let revealed = null;     // nome dell'abbinato, solo finché la schermata resta aperta
+let justRevealed = false;
+let pollTimer = null;
+
+function stopPoll() { if (pollTimer) { clearInterval(pollTimer); pollTimer = null; } }
+
+async function openRoom(code) {
+  const sess = readSessions().rooms[code];
+  if (!sess) return showAccess(code);
+  render(card(h("p", { class: "muted center" }, "Caricamento…")));
+  try {
+    const data = await api("state", { code, name: sess.name, pin: sess.pin });
+    saveSession(code, sess.name, sess.pin);
+    enterRoom(data, { code, name: sess.name, pin: sess.pin });
+  } catch (e) {
+    if (e.status === 404) { dropSession(code); return showHome(e.message); }
+    if (e.status === 401) { dropSession(code); return showAccess(code, "Non risulti più in questa stanza. Iscriviti di nuovo o entra con nome e PIN."); }
+    if (e.status === 429) return showAccess(code, e.message);
+    showRetry(e.message, () => openRoom(code));
+  }
+}
+
+function enterRoom(data, creds) {
+  current = { ...creds, data };
+  revealed = null;
+  justRevealed = false;
+  setUrl(creds.code);
+  renderRoom();
+}
+
+function setData(data) { current.data = data; renderRoom(); }
+
+const roomPayload = (extra = {}) => ({ code: current.code, name: current.name, pin: current.pin, ...extra });
+
+async function shareLink(btn) {
+  const url = `${location.origin}/?c=${current.code}`;
+  try {
+    if (navigator.share && /Mobi|Android/i.test(navigator.userAgent)) {
+      await navigator.share({ title: "Secret Santa", text: "Entra nella mia stanza Secret Santa", url });
+      return;
+    }
+    await navigator.clipboard.writeText(url);
+    btn.textContent = "Link copiato";
+    setTimeout(() => { btn.textContent = "Condividi link"; }, 2000);
+  } catch (e) {
+    if (e && e.name === "AbortError") return;
+    window.prompt("Copia il link e mandalo agli amici:", url);
+  }
+}
+
+function renderRoom() {
+  const d = current.data;
+  const isHost = d.me.isHost;
+  const open = d.status === "open";
+  const banner = h("div", { class: "error", role: "alert", hidden: true });
+  const showError = (e) => { banner.textContent = e.message; banner.hidden = false; banner.scrollIntoView({ block: "nearest" }); };
+
+  const shareBtn = h("button", { class: "btn secondary", type: "button" }, "Condividi link");
+  shareBtn.addEventListener("click", () => shareLink(shareBtn));
+
+  const head = card(
+    h("h2", {}, d.title),
+    d.budget ? h("p", { class: "muted" }, `Budget: ${d.budget}`) : null,
+    h("div", { class: "codebox" },
+      h("div", {},
+        h("div", { class: "small muted" }, "Codice stanza"),
+        h("div", { class: "code-chip" }, d.code)
+      ),
+      shareBtn
+    )
+  );
+
+  const list = card(
+    h("h2", {}, `Partecipanti (${d.members.length})`),
+    h("ul", { class: "members" }, d.members.map((m) => h("li", {},
+      h("span", { class: "who" },
+        m.name,
+        m.id === d.me.id ? h("span", { class: "pill me" }, "tu") : null,
+        m.isHost ? h("span", { class: "pill" }, "host") : null
+      ),
+      isHost && open && !m.isHost
+        ? h("button", { class: "btn danger", type: "button", onclick: async () => {
+            if (!(await askConfirm(`Rimuovere ${m.name} dalla stanza?`, "Rimuovi"))) return;
+            try { setData(await api("remove", roomPayload({ memberId: m.id }))); } catch (e) { showError(e); }
+          } }, "Rimuovi")
+        : null
+    )))
+  );
+
+  let action;
+  if (open) {
+    if (isHost) {
+      const enough = d.members.length >= d.minMembers;
+      const drawBtn = h("button", { class: "btn primary block", type: "button", disabled: !enough, onclick: async () => {
+        if (!(await askConfirm("Dopo l'estrazione nessuno potrà più iscriversi o essere rimosso. Procedo?", "Estrai"))) return;
+        drawBtn.disabled = true;
+        try { setData(await api("draw", roomPayload())); } catch (e) { drawBtn.disabled = !enough; showError(e); }
+      } }, "Chiudi le iscrizioni ed estrai");
+      action = card(
+        h("h2", {}, "Quando ci siete tutti"),
+        h("p", { class: "muted" }, enough
+          ? "Chiudi le iscrizioni e fai l'estrazione. Ognuno vedrà solo il proprio abbinamento, anche tu."
+          : `Servono almeno ${d.minMembers} partecipanti per estrarre. Manda il codice agli amici.`),
+        drawBtn
+      );
+    } else {
+      action = card(
+        h("h2", {}, "In attesa dell'host"),
+        h("p", { class: "muted" }, "Sei iscritto. Quando l'host avrà fatto l'estrazione, rientra con il tuo nome e il tuo PIN: troverai il pulsante per scoprire il tuo abbinamento.")
+      );
+    }
+  } else if (revealed === null) {
+    const btn = h("button", { class: "btn primary block", type: "button", onclick: async () => {
+      btn.disabled = true;
+      try {
+        const r = await api("reveal", roomPayload());
+        revealed = r.target; justRevealed = true; renderRoom();
+      } catch (e) { btn.disabled = false; showError(e); }
+    } }, "Mostrami a chi devo fare da SS");
+    action = card(
+      h("h2", {}, "Estrazione fatta"),
+      h("p", { class: "muted" }, "Ognuno vede solo il proprio abbinamento. Controlla che nessuno stia guardando lo schermo."),
+      btn
+    );
+  } else {
+    const swing = justRevealed; justRevealed = false;
+    action = card(
+      h("div", { class: "tagwrap" },
+        h("div", { class: "tag" + (swing ? " swing" : "") },
+          h("p", { class: "for" }, "Fai il regalo a"),
+          h("p", { class: "target" }, revealed)
+        ),
+        d.budget ? h("p", { class: "muted small" }, `Budget: ${d.budget}`) : null,
+        h("button", { class: "btn secondary", type: "button", onclick: () => { revealed = null; renderRoom(); } }, "Nascondi")
+      )
+    );
+  }
+
+  const leave = h("div", { class: "center" },
+    h("button", { class: "btn text", type: "button", onclick: () => {
+      dropSession(current.code); current = null; revealed = null; showHome();
+    } }, "Esci da questa stanza"),
+    h("p", { class: "small muted" }, "Potrai rientrare con il tuo nome e il tuo PIN.")
+  );
+
+  render(banner, head, open ? [list, action] : [action, list], leave);
+  startPoll();
+}
+
+function startPoll() {
+  if (!current || current.data.status !== "open") return;
+  const code = current.code;
+  pollTimer = setInterval(async () => {
+    if (document.hidden || !current || current.code !== code) return;
+    try {
+      const d = await api("state", roomPayload());
+      const sig = (x) => JSON.stringify([x.status, x.members.map((m) => m.id)]);
+      if (sig(d) !== sig(current.data)) setData(d);
+    } catch (e) {
+      if (e.status === 401 || e.status === 404) {
+        dropSession(code);
+        current = null;
+        e.status === 404 ? showHome(e.message) : showAccess(code, "Non risulti più in questa stanza.");
+      }
+    }
+  }, 10000);
+}
+
+/* ---------- avvio ---------- */
+
+(function boot() {
+  const urlCode = normCode(new URLSearchParams(location.search).get("c"));
+  const s = readSessions();
+  const code = urlCode || s.last;
+  if (!code) return showHome();
+  if (s.rooms[code]) return openRoom(code);
+  showAccess(code);
+})();
+</script>
+</body>
+</html>
